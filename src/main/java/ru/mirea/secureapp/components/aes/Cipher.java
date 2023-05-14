@@ -1,12 +1,13 @@
-package ru.mirea.secureapp.aes;
+package ru.mirea.secureapp.components.aes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 
-import static ru.mirea.secureapp.aes.Constants.*;
+import static ru.mirea.secureapp.components.aes.Constants.*;
 
 public class Cipher {
     private byte[] key;
@@ -78,23 +79,26 @@ public class Cipher {
     }
 
     public String getKeyBase64() {
-        return Base64.getEncoder().encodeToString(key);
+        return new String(Base64.getEncoder().encode(key), StandardCharsets.UTF_8);
+//        return Base64.getEncoder().encodeToString(key);
     }
 
     public byte[] getKey(){
         return key;
     }
 
-    public String encrypt(byte[] text) {
+    public String encrypt(String text) {
+        byte[] encryptedArray = text.getBytes(StandardCharsets.UTF_16LE);
+
         ByteArrayOutputStream result = new ByteArrayOutputStream();
-        for (int i = 0; i < text.length; i += BLOCK_LENGTH) {
+        for (int i = 0; i < encryptedArray.length; i += BLOCK_LENGTH) {
             try {
-                result.write(encryptBlock(Arrays.copyOfRange(text, i, i + BLOCK_LENGTH)));
+                result.write(encryptBlock(Arrays.copyOfRange(encryptedArray, i, i + BLOCK_LENGTH)));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
-        return Base64.getEncoder().encodeToString(result.toByteArray());
+        return new String(Base64.getEncoder().encode(result.toByteArray()), StandardCharsets.UTF_8);
     }
 
     private byte[] encryptBlock(byte[] text) {
@@ -116,7 +120,7 @@ public class Cipher {
     }
 
     public String decrypt(String encryptedText) {
-        byte[] text = Base64.getDecoder().decode(encryptedText);
+        byte[] text = Base64.getDecoder().decode(encryptedText.getBytes(StandardCharsets.UTF_8));
 
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         for (int i = 0; i < text.length; i += BLOCK_LENGTH) {
@@ -126,7 +130,7 @@ public class Cipher {
                 e.printStackTrace();
             }
         }
-        return result.toString().trim();
+        return result.toString(StandardCharsets.UTF_16LE).trim();
     }
 
     private byte[] decryptBlock(byte[] text) {

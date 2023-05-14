@@ -1,15 +1,15 @@
 package ru.mirea.secureapp.services;
 
 import org.springframework.stereotype.Service;
-import ru.mirea.secureapp.aes.Cipher;
-import ru.mirea.secureapp.aes.Type;
+import ru.mirea.secureapp.components.aes.Cipher;
+import ru.mirea.secureapp.components.aes.Type;
 
 @Service
-public class FrontService {
-    private final Cipher cipher = new Cipher(Type.AES_128);
+public class CipherService {
+    private final Cipher cipher = new Cipher(Type.AES_256);
 
     public String encode(String text) {
-        return cipher.encrypt(text.getBytes());
+        return cipher.encrypt(text);
     }
 
     public String decode(String encodedText) {

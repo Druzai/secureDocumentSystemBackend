@@ -1,4 +1,4 @@
-package ru.mirea.secureapp.aes;
+package ru.mirea.secureapp.components.aes;
 
 public enum Type {
     AES_128,

@@ -25,9 +25,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CipherService cipherService;
+
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCryptKey(cipherService.getBase64Key());
         log.info("Save new user - " + user.getUsername());
         userRepository.save(user);
     }
@@ -36,6 +40,7 @@ public class UserService {
     public void save(String username, String password) {
         User user = new User(username, password);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCryptKey(cipherService.getBase64Key());
         log.info("Save new user - " + user.getUsername());
         userRepository.save(user);
     }

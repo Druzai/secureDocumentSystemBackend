@@ -1,4 +1,4 @@
-package ru.mirea.secureapp.aes;
+package ru.mirea.secureapp.components.aes;
 
 public class Constants {
     public static int BLOCK_LENGTH = 16; // 16 bytes
