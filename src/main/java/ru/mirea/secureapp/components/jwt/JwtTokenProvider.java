@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.joining;
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "roles";
+    private static final String TOKEN_TYPE = "type";
 
     private final JwtProperties jwtProperties;
 
@@ -38,16 +39,19 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, boolean refreshToken) {
         String username = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Claims claims = Jwts.claims().setSubject(username);
         if (!authorities.isEmpty()) {
             claims.put(AUTHORITIES_KEY, authorities.stream().map(GrantedAuthority::getAuthority).collect(joining(",")));
         }
+        claims.put(TOKEN_TYPE, refreshToken ? JwtTypes.REFRESH.toString() : JwtTypes.ACCESS.toString());
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
+        Date validity = refreshToken
+                ? new Date(now.getTime() + this.jwtProperties.getRefreshValidityInMs())
+                : new Date(now.getTime() + this.jwtProperties.getValidityInMs());
 
         return Jwts.builder()
                 .setClaims(claims)

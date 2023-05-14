@@ -6,6 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,13 +47,25 @@ public class AuthenticationController {
     @SuppressWarnings("rawtypes")
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
+        return getResponseEntity(data.getUsername().trim(), data.getPassword().trim());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @PostMapping("/refresh")
+    public ResponseEntity refreshToken(@AuthenticationPrincipal UserDetails userDetails) {
+        return getResponseEntity(userDetails.getUsername().trim(), userDetails.getPassword().trim());
+    }
+
+    @SuppressWarnings("rawtypes")
+    private ResponseEntity getResponseEntity(String username, String password) {
         try {
-            String username = data.getUsername().trim();
-            var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword().trim()));
-            String token = jwtTokenProvider.createToken(authentication);
+            var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            String accessToken = jwtTokenProvider.createToken(authentication, false);
+            String refreshToken = jwtTokenProvider.createToken(authentication, true);
             Map<Object, Object> model = new HashMap<>();
             model.put("username", username);
-            model.put("token", token);
+            model.put("accessToken", accessToken);
+            model.put("refreshToken", refreshToken);
             return ok(model);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
