@@ -1,2 +1,14 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://192.168.100.35:5432/"
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    database: postgresql
 server:
   port: 8080
