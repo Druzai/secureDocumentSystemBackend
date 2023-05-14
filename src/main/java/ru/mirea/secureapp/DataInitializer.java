@@ -30,7 +30,8 @@ public class DataInitializer implements CommandLineRunner {
                     new Role(1L, "ROLE_ADMIN"),
                     new Role(2L, "ROLE_USER"),
                     new Role(3L, "ROLE_VIEWER"),
-                    new Role(4L, "ROLE_EDITOR")));
+                    new Role(4L, "ROLE_EDITOR")
+            ));
         }
         if (userRepository.findAll().isEmpty()) {
             log.debug("Initializing users' data...");

@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/signin").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers("/api/auth/refresh").permitAll()
+                        .requestMatchers("/api/auth/refresh").authenticated()
 //                        .requestMatchers(HttpMethod.GET, "/vehicles/**").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()
