@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ru.mirea.secureapp.data.AnswerBase;
 
 @ControllerAdvice
 public class ApiResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {BadCredentialsException.class, UsernameNotFoundException.class})
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        var answer = new AnswerBase();
+        answer.setError(ex.getMessage());
+        return handleExceptionInternal(ex, answer, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

@@ -13,5 +13,5 @@ public class JwtProperties {
 
     // validity in milliseconds
     private long validityInMs = 60 * 60 * 1000; // 1h
-    private long refreshValidityInMs = 24 * 60 * 60 * 1000; // 1h
+    private long refreshValidityInMs = 24 * 60 * 60 * 1000; // 24h
 }

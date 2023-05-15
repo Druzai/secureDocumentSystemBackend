@@ -3,8 +3,6 @@ package ru.mirea.secureapp.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -43,6 +40,20 @@ public class UserService {
         user.setCryptKey(cipherService.getBase64Key());
         log.info("Save new user - " + user.getUsername());
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void update(User user){
+        log.info("Update user - " + user.getUsername());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserKey(String username) {
+        User user = findByUsername(username);
+        user.setCryptKey(cipherService.getBase64Key());
+        cipherService.updateKey(user.getId(), user.getCryptKey());
+        update(user);
     }
 
     @Transactional(readOnly = true)
