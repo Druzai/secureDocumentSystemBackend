@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.mirea.secureapp.components.AuthenticationRequest;
+import ru.mirea.secureapp.data.AuthenticationRequest;
 import ru.mirea.secureapp.components.jwt.JwtTokenProvider;
 import ru.mirea.secureapp.data.AnswerBase;
 import ru.mirea.secureapp.services.CipherService;
@@ -45,7 +45,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public AnswerBase signin(@RequestBody AuthenticationRequest data) {
+    public AnswerBase signIn(@RequestBody AuthenticationRequest data) {
         try {
             String username = data.getUsername().trim();
             var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword().trim()));

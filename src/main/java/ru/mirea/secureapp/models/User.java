@@ -1,5 +1,6 @@
 package ru.mirea.secureapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,13 +26,17 @@ public class User implements UserDetails {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private String cryptKey;
 
+    @JsonIgnore
     @Transient
     private String passwordConfirm;
 
+    @JsonIgnore
     @ManyToMany
     private Set<Role> roles;
 

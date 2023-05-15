@@ -1,4 +1,4 @@
-package ru.mirea.secureapp.components;
+package ru.mirea.secureapp.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
