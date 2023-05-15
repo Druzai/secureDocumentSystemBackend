@@ -1,6 +1,7 @@
 package ru.mirea.secureapp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController()
-@RequestMapping(path = "/api/users", produces = "application/json")
+@RequestMapping(path = "/api/user", produces = "application/json")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -38,6 +39,7 @@ public class UserController {
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
+//        return "user";
     }
 
     @GetMapping("/{id}")
@@ -47,7 +49,7 @@ public class UserController {
         var answer = new AnswerBase();
         if (user.isEmpty()) {
             answer.setError("User not found!");
-            return ResponseEntity.status(HttpStatusCode.valueOf(404)).body(answer);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
         } else {
             model.put("username", user.get().getUsername());
             model.put("allRoles", roleService.getRoles());
@@ -57,13 +59,13 @@ public class UserController {
                 model.put("me", false);
                 model.put("documents",
                         documentService.getDocumentsOfCurrentUser(userService.findByUsername(userDetails.getUsername()))
-                                .stream().map(d-> new DocumentInfo(d.getId(), d.getName(), d.getLastEditBy(), d.getOwner()))
-                                .collect(Collectors.toList())
+                                .stream().map(DocumentInfo::new).collect(Collectors.toList())
                 );
                 model.put("allRoles", roleService.getRolesRights());
             }
             answer.setResult(model);
             return ResponseEntity.ok(answer);
+//            return "other_user";
         }
     }
 
@@ -77,9 +79,10 @@ public class UserController {
             model.put("documentRight", documentRight);
             answer.setResult(model);
             return ResponseEntity.ok(answer);
+//            return "redirect:/users/";
         } else {
             answer.setError("User not found!");
-            return ResponseEntity.status(HttpStatusCode.valueOf(404)).body(answer);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
         }
     }
 
@@ -113,5 +116,6 @@ public class UserController {
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
+//        return "users";
     }
 }

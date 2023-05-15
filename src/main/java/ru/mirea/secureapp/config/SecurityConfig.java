@@ -2,6 +2,7 @@ package ru.mirea.secureapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/signin").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/refresh").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/user**").hasRole("ROLE_ADMIN")
+                        .requestMatchers("/api/document**").hasRole("ROLE_USER")
 //                        .requestMatchers(HttpMethod.GET, "/vehicles/**").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()
