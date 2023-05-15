@@ -28,11 +28,15 @@ public class DocumentService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private CipherService cipherService;
+
     @Transactional
     public Document createDocument(User owner, String documentName) {
         var document = new Document();
         document.setOwner(owner);
         document.setName(documentName);
+        document.setCryptKey(cipherService.getBase64Key());
         documentUserRightsRepository.save(document.addDocumentToUser(owner, new Role(4L, "ROLE_EDITOR")));
         documentRepository.save(document);
         return document;

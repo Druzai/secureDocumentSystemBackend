@@ -8,7 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.secureapp.data.AnswerBase;
 import ru.mirea.secureapp.data.DocumentInfo;
+import ru.mirea.secureapp.models.Document;
 import ru.mirea.secureapp.models.Paragraph;
+import ru.mirea.secureapp.models.User;
+import ru.mirea.secureapp.services.CipherService;
 import ru.mirea.secureapp.services.DocumentService;
 import ru.mirea.secureapp.services.UserService;
 
@@ -25,6 +28,9 @@ public class DocumentController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CipherService cipherService;
 
     @GetMapping("/allByUser")
     public AnswerBase getDocuments(@AuthenticationPrincipal UserDetails userDetails) {
@@ -92,5 +98,20 @@ public class DocumentController {
         answer.setResult(model);
         return ResponseEntity.ok(answer);
 //        return "redirect:/doc/" + doc.getId();
+    }
+
+    @GetMapping("/{id}/wsKey")
+    public ResponseEntity<AnswerBase> getDocuments(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
+        Document document = documentService.getDocument((long) id);
+        Map<Object, Object> model = new HashMap<>();
+        var answer = new AnswerBase();
+        if (document == null) {
+            answer.setError("User not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
+        }
+        User user = userService.findByUsername(userDetails.getUsername());
+        model.put("documentWsKey", cipherService.encode(document.getCryptKey(), user)); // Encrypted
+        answer.setResult(model);
+        return ResponseEntity.ok(answer);
     }
 }

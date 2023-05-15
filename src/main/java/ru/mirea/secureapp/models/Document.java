@@ -21,6 +21,8 @@ public class Document {
 
     private String lastEditBy = null;
 
+    private String cryptKey;
+
     @OneToOne
     private User owner;
 
