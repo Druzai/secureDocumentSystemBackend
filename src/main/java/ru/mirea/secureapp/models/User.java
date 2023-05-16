@@ -33,10 +33,6 @@ public class User implements UserDetails {
     private String cryptKey;
 
     @JsonIgnore
-    @Transient
-    private String passwordConfirm;
-
-    @JsonIgnore
     @ManyToMany
     private Set<Role> roles;
 

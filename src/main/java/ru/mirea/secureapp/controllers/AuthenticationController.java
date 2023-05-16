@@ -9,10 +9,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.mirea.secureapp.data.AuthenticationRequest;
 import ru.mirea.secureapp.components.jwt.JwtTokenProvider;
 import ru.mirea.secureapp.data.AnswerBase;
-import ru.mirea.secureapp.services.CipherService;
+import ru.mirea.secureapp.data.AuthenticationRequest;
 import ru.mirea.secureapp.services.UserService;
 
 import java.util.HashMap;
@@ -28,8 +27,6 @@ public class AuthenticationController {
     private final JwtTokenProvider jwtTokenProvider;
     @Autowired
     private final UserService userService;
-    @Autowired
-    private final CipherService cipherService;
 
     @PostMapping("/register")
     public AnswerBase register(@RequestBody AuthenticationRequest data) {

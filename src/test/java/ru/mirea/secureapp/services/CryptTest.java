@@ -1,14 +1,11 @@
 package ru.mirea.secureapp.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mirea.secureapp.SecureDocumentSystemApplicationTests;
 import ru.mirea.secureapp.components.aes.Cipher;
 import ru.mirea.secureapp.components.aes.Type;
-import java.nio.charset.StandardCharsets;
-
-import java.util.Arrays;
 
 public class CryptTest extends SecureDocumentSystemApplicationTests {
     private Cipher cipher;
