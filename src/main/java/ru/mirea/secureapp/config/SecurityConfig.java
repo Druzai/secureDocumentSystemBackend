@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/refresh").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/user**").hasRole("ROLE_ADMIN")
+                        .requestMatchers("/api/user/all").permitAll()
                         .requestMatchers("/api/document**").hasRole("ROLE_USER")
 //                        .requestMatchers(HttpMethod.GET, "/vehicles/**").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")

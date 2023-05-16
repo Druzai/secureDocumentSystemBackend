@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.mirea.secureapp.data.AnswerBase;
-import ru.mirea.secureapp.data.DocumentInfo;
-import ru.mirea.secureapp.data.DocumentRight;
-import ru.mirea.secureapp.data.UserInfo;
+import ru.mirea.secureapp.data.*;
 import ru.mirea.secureapp.services.DocumentService;
 import ru.mirea.secureapp.services.RoleService;
 import ru.mirea.secureapp.services.UserService;
@@ -52,10 +49,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
         } else {
             model.put("username", user.get().getUsername());
-            model.put("allRoles", roleService.getRoles());
-            if (userDetails.getUsername().equals(user.get().getUsername()))
+            if (userDetails.getUsername().equals(user.get().getUsername())) {
                 model.put("me", true);
-            else {
+                model.put("documents", null);
+                model.put("allRoles", null);
+            } else {
                 model.put("me", false);
                 model.put("documents",
                         documentService.getDocumentsOfCurrentUser(userService.findByUsername(userDetails.getUsername()))
@@ -87,7 +85,10 @@ public class UserController {
     }
 
     @PostMapping("/updateRoles")
-    public ResponseEntity<AnswerBase> setUserRole(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UserInfo userInfo) {
+    public ResponseEntity<AnswerBase> setUserRole(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody UserInfoRequest userInfo
+    ) {
         var user = userService.findByUsername(userDetails.getUsername());
         Map<Object, Object> model = new HashMap<>();
         var answer = new AnswerBase();
@@ -112,7 +113,7 @@ public class UserController {
     @GetMapping("/all")
     public AnswerBase getUsers() {
         Map<Object, Object> model = new HashMap<>();
-        model.put("users", userService.getUserList());
+        model.put("users", userService.getUserList().stream().map(u -> new UserInfo(u.getId().intValue(), u.getUsername())));
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;

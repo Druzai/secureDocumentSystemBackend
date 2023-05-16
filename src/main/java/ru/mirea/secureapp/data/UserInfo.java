@@ -1,16 +1,15 @@
 package ru.mirea.secureapp.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
-import ru.mirea.secureapp.models.Role;
 
-import java.util.Set;
-
-@Component
+@Data
 @Getter
 @Setter
+@AllArgsConstructor
 public class UserInfo {
+    private Integer id;
     private String username;
-    private Set<Role> roles;
 }
