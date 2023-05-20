@@ -69,7 +69,7 @@ public class DocumentController {
         }
         model.put("editor", editor);
         DocumentInfo documentInfo = new DocumentInfo(document);
-        documentInfo.setLastEditBy(cipherService.encode(documentInfo.getLastEditBy(), user));
+        documentInfo.setLastEditBy(cipherService.encode(documentInfo.getLastEditBy() == null ? "" : documentInfo.getLastEditBy(), user));
         model.put("document", documentInfo);
         model.put("owner", owner);
         if (!document.getParagraphList().isEmpty())
