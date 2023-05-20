@@ -19,6 +19,9 @@ public class Role {
 
     private String name;
 
+    @Transient
+    private String userName;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
@@ -26,6 +29,12 @@ public class Role {
     public Role(long id, String role_user) {
         this.id = id;
         this.name = role_user;
+    }
+
+    public Role(long id, String role_user, String userName) {
+        this.id = id;
+        this.name = role_user;
+        this.userName = userName;
     }
 
     public Role() {}

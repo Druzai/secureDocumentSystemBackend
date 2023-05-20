@@ -32,8 +32,8 @@ public class UserController {
         var user = userService.findByUsername(userDetails.getUsername());
         Map<String, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
-        model.put("myRoles", user.getRoles());
-        model.put("allRoles", roleService.getRoles());
+        model.put("myRoles", roleService.processRoles(user.getRoles()));
+        model.put("allRoles", roleService.getNamedRoles());
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
@@ -99,7 +99,7 @@ public class UserController {
             changingUser.setRoles(userInfo.getRoles());
             userService.update(changingUser);
             model.put("username", userDetails.getUsername());
-            model.put("changedRoles", user.getRoles());
+            model.put("changedRoles", roleService.processRoles(user.getRoles()));
             answer.setResult(model);
             return ResponseEntity.ok(answer);
         } else {
