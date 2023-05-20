@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InputMessage {
-    private String textMessage;
+    private String text;
     private boolean toEncode;
 }

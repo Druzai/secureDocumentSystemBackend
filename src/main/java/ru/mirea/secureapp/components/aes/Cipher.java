@@ -80,7 +80,6 @@ public class Cipher {
 
     public String getKeyBase64() {
         return new String(Base64.getEncoder().encode(key), StandardCharsets.UTF_8);
-//        return Base64.getEncoder().encodeToString(key);
     }
 
     public byte[] getKey(){

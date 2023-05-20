@@ -26,17 +26,17 @@ public class CipherController {
     @PostMapping("/text")
     public AnswerBase processText(@AuthenticationPrincipal UserDetails userDetails, @RequestBody InputMessage message) {
         log.info("Received message");
-        log.info(MessageFormat.format("Message: {0}", message.getTextMessage()));
+        log.info(MessageFormat.format("Message: {0}", message.getText()));
         log.info(MessageFormat.format("Encode: {0}", message.isToEncode()));
         String result = message.isToEncode()
-                ? cipherService.encode(message.getTextMessage(), userService.findByUsername(userDetails.getUsername()))
-                : cipherService.decode(message.getTextMessage(), userService.findByUsername(userDetails.getUsername()));
+                ? cipherService.encode(message.getText(), userService.findByUsername(userDetails.getUsername()))
+                : cipherService.decode(message.getText(), userService.findByUsername(userDetails.getUsername()));
         log.info(MessageFormat.format("Result: {0}", result));
-        Map<String, Object> model = new HashMap<>();
-        model.put("message", result);
-        model.put("toEncode", message.isToEncode());
+        InputMessage inputMessage = new InputMessage();
+        inputMessage.setText(result);
+        inputMessage.setToEncode(message.isToEncode());
         var answer = new AnswerBase();
-        answer.setResult(model);
+        answer.setResult(inputMessage);
         return answer;
     }
 
