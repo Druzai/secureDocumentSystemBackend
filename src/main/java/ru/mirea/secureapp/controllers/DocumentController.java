@@ -34,7 +34,7 @@ public class DocumentController {
 
     @GetMapping("/allByUser")
     public AnswerBase getDocuments(@AuthenticationPrincipal UserDetails userDetails) {
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("documents",
                 documentService.getUserDocuments(userService.findByUsername(userDetails.getUsername()))
                         .stream().map(DocumentInfo::new).collect(Collectors.toList())
@@ -42,16 +42,15 @@ public class DocumentController {
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
-//        return "documents";
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AnswerBase> getDocument(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         var document = documentService.getDocument((long) id);
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (document == null) {
-            answer.setError("User not found!");
+            answer.setError("Document not found!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
         }
         var user = userService.findByUsername(userDetails.getUsername());
@@ -69,16 +68,18 @@ public class DocumentController {
             owner = true;
         }
         model.put("editor", editor);
-        model.put("document", new DocumentInfo(document));
+        DocumentInfo documentInfo = new DocumentInfo(document);
+        documentInfo.setLastEditBy(cipherService.encode(documentInfo.getLastEditBy(), user));
+        model.put("document", documentInfo);
         model.put("owner", owner);
-//        model.put("lastEditedBy", document.getLastEditBy());
         if (!document.getParagraphList().isEmpty())
             document.setParagraphList(document.getParagraphList().stream()
-                    .sorted(Comparator.comparingInt(Paragraph::getNumber)).toList());
+                    .sorted(Comparator.comparingInt(Paragraph::getNumber))
+                    .map(p -> new Paragraph(p.getNumber(), cipherService.encode(p.getContent(), user), cipherService.encode(p.getAlign(), user)))
+                    .toList());
         model.put("documentParagraphs", document.getParagraphList());
         answer.setResult(model);
         return ResponseEntity.ok(answer);
-//        return "editor";
     }
 
     @PostMapping("/new")
@@ -86,24 +87,22 @@ public class DocumentController {
             @RequestBody DocumentInfo documentInfo,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (documentInfo.getName() == null || documentInfo.getName().trim().isEmpty()) {
             answer.setError("Wrong name!");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(answer);
-//            return "new_document";
         }
         var document = documentService.createDocument(userService.findByUsername(userDetails.getUsername()), documentInfo.getName());
         model.put("document", new DocumentInfo(document));
         answer.setResult(model);
         return ResponseEntity.ok(answer);
-//        return "redirect:/doc/" + doc.getId();
     }
 
     @GetMapping("/{id}/wsKey")
     public ResponseEntity<AnswerBase> getDocuments(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         Document document = documentService.getDocument((long) id);
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (document == null) {
             answer.setError("User not found!");

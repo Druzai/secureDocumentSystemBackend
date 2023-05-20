@@ -52,6 +52,7 @@ public class DocumentService {
         return documentRepository.findDocumentByOwner(user);
     }
 
+    @Transactional
     public Document getDocument(Long id) {
         var docs = documentRepository.findById(id);
         return docs.orElse(null);

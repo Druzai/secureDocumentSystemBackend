@@ -32,7 +32,7 @@ public class CipherController {
                 ? cipherService.encode(message.getTextMessage(), userService.findByUsername(userDetails.getUsername()))
                 : cipherService.decode(message.getTextMessage(), userService.findByUsername(userDetails.getUsername()));
         log.info(MessageFormat.format("Result: {0}", result));
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("message", result);
         model.put("toEncode", message.isToEncode());
         var answer = new AnswerBase();
@@ -42,7 +42,7 @@ public class CipherController {
 
     @GetMapping("/key")
     public AnswerBase getKey(@AuthenticationPrincipal UserDetails userDetails) {
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("key", cipherService.getBase64Key(userService.findByUsername(userDetails.getUsername())));
         var answer = new AnswerBase();
         answer.setResult(model);

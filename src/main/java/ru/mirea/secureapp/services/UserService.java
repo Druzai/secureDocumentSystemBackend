@@ -7,11 +7,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mirea.secureapp.models.Role;
 import ru.mirea.secureapp.models.User;
 import ru.mirea.secureapp.repositories.UserRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -36,6 +39,9 @@ public class UserService {
     @Transactional
     public void save(String username, String password) {
         User user = new User(username, password);
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(new Role(2L, "ROLE_USER"));
+        user.setRoles(roleSet);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCryptKey(cipherService.getBase64Key());
         log.info("Save new user - " + user.getUsername());

@@ -1,5 +1,6 @@
 package ru.mirea.secureapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.*;
 @Getter
 @Setter
 public class Paragraph {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

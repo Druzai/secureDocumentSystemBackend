@@ -34,7 +34,7 @@ public class AuthenticationController {
         String password = data.getPassword().trim();
         userService.validate(username, password);
         userService.save(username, password);
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, String> model = new HashMap<>();
         model.put("username", username);
         var answer = new AnswerBase();
         answer.setResult(model);
@@ -77,7 +77,7 @@ public class AuthenticationController {
             String accessToken,
             String refreshToken
     ) {
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, String> model = new HashMap<>();
         model.put("username", username);
         model.put("accessToken", accessToken);
         model.put("refreshToken", refreshToken);

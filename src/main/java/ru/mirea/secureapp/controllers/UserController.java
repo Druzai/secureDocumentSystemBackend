@@ -13,6 +13,7 @@ import ru.mirea.secureapp.services.RoleService;
 import ru.mirea.secureapp.services.UserService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,20 +30,19 @@ public class UserController {
     @GetMapping("/me")
     public AnswerBase currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         var user = userService.findByUsername(userDetails.getUsername());
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("myRoles", user.getRoles());
         model.put("allRoles", roleService.getRoles());
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
-//        return "user";
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AnswerBase> getUser(@PathVariable int id, @AuthenticationPrincipal UserDetails userDetails) {
         var user = userService.findById((long) id);
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (user.isEmpty()) {
             answer.setError("User not found!");
@@ -63,21 +63,19 @@ public class UserController {
             }
             answer.setResult(model);
             return ResponseEntity.ok(answer);
-//            return "other_user";
         }
     }
 
     @PostMapping("/changeRights")
     public ResponseEntity<AnswerBase> addUserRight(@RequestBody DocumentRight documentRight) {
         var user = userService.findById(documentRight.getUserId());
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (user.isPresent()) {
             documentService.checkDocumentRights(documentRight.getDocumentId(), user.get(), documentRight.getRoleId());
             model.put("documentRight", documentRight);
             answer.setResult(model);
             return ResponseEntity.ok(answer);
-//            return "redirect:/users/";
         } else {
             answer.setError("User not found!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(answer);
@@ -90,7 +88,7 @@ public class UserController {
             @RequestBody UserInfoRequest userInfo
     ) {
         var user = userService.findByUsername(userDetails.getUsername());
-        Map<Object, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         var answer = new AnswerBase();
         if (user.getUsername().equals(userInfo.getUsername()) ||
 //                userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))
@@ -112,11 +110,10 @@ public class UserController {
 
     @GetMapping("/all")
     public AnswerBase getUsers() {
-        Map<Object, Object> model = new HashMap<>();
-        model.put("users", userService.getUserList().stream().map(u -> new UserInfo(u.getId().intValue(), u.getUsername())));
+        Map<String, List<UserInfo>> model = new HashMap<>();
+        model.put("users", userService.getUserList().stream().map(u -> new UserInfo(u.getId().intValue(), u.getUsername())).toList());
         var answer = new AnswerBase();
         answer.setResult(model);
         return answer;
-//        return "users";
     }
 }

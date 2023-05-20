@@ -10,6 +10,7 @@ import ru.mirea.secureapp.services.CipherService;
 import ru.mirea.secureapp.services.DocumentService;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebSocketController {
@@ -34,7 +35,7 @@ public class WebSocketController {
                                         cipherService.decode(c.getData(), document),
                                         cipherService.decode(c.getAlign(), document)
                                 ))
-                                .toList()
+                                .collect(Collectors.toList())
 
         );
         documentService.editDocument(decodedMessage);
