@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import ru.mirea.secureapp.components.jwt.JwtTokenFilter;
 import ru.mirea.secureapp.components.jwt.JwtTokenProvider;
 import ru.mirea.secureapp.repositories.UserRepository;
@@ -30,6 +30,9 @@ public class SecurityConfig {
     SecurityFilterChain springWebFilterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .headers().addHeaderWriter(
+                        new StaticHeadersWriter("Access-Control-Allow-Origin", "*")).and()
+                .cors().and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(c -> c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
@@ -44,6 +47,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.GET, "/vehicles/**").permitAll()
 //                        .requestMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
 //                        .requestMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()
+//                        .anyRequest().permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtTokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
